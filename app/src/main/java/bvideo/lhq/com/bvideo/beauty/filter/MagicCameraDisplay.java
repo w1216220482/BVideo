@@ -28,6 +28,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import bvideo.lhq.com.bvideo.beauty.core.EglCore;
 import bvideo.lhq.com.bvideo.beauty.core.MediaAudioEncoder;
@@ -63,9 +64,10 @@ public class MagicCameraDisplay implements Renderer {
 
     /**
      * Camera预览数据接收层，必须和OpenGL绑定 过程见{@link
-     * OpenGLUtils.getExternalOESTextureID()};
+     * OpenGLUtils#getExternalOESTextureID() OpenGLUtils.getExternalOESTextureID()};
      */
     private SurfaceTexture mSurfaceTexture;
+
 
     /**
      * 所有预览数据绘制画面
@@ -357,7 +359,7 @@ public class MagicCameraDisplay implements Renderer {
     /**
      * 设置滤镜
      *
-     * @param 参数类型
+     * @param filterType
      */
     public void setFilter(final int filterType) {
         mGLSurfaceView.queueEvent(new Runnable() {
@@ -380,7 +382,7 @@ public class MagicCameraDisplay implements Renderer {
     /**
      * 设置滤镜
      *
-     * @param 参数类型
+     * @param filter
      */
     public void setFilter(final GPUImageFilter filter) {
         mGLSurfaceView.queueEvent(new Runnable() {
@@ -425,7 +427,7 @@ public class MagicCameraDisplay implements Renderer {
 
     private boolean mIsRecording = false;
 
-    private static File getOutputRecordPath() {
+    public static File getOutputRecordPath() {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "bvideo");
         if (!mediaStorageDir.exists()) {
@@ -441,7 +443,15 @@ public class MagicCameraDisplay implements Renderer {
         return mediaFile;
     }
 
-    public void startRecording() {
+    /**
+     * 开始录制
+     *
+     * @param fileName 保存的mp4的绝对路径 如：Environment.getExternalStorageDirectory() + "/recordVideo/beautiful_girl.mp4"
+     */
+    public void startRecording(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            throw new IllegalArgumentException("fileName cannot be empty!");
+        }
         if (mIsRecording) {
             return;
         }
@@ -450,7 +460,7 @@ public class MagicCameraDisplay implements Renderer {
             if (mMediaType == MediaType.MEDIA_PUSH) {
                 mMuxer = new MediaMuxerWrapper();
             } else if (mMediaType == MediaType.MEDIA_RECORD) {
-                mMuxer = new MediaRecordMuxerWrapper(getOutputRecordPath().getAbsolutePath());
+                mMuxer = new MediaRecordMuxerWrapper(fileName);
                 // for audio capturing
                 mAudioEncoder = new MediaAudioEncoder(mMuxer, mMediaEncoderListener, mMediaType);
             }

@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
     private void startRecording() {
         if (!mIsRecording) {
             mIsRecording = true;
-            mMagicCameraDisplay.startRecording();
+            mMagicCameraDisplay.startRecording(MagicCameraDisplay.getOutputRecordPath().getAbsolutePath());
         }
     }
 
@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
     protected void onResume() {
         super.onResume();
         if (mIsRecording) {
-            mMagicCameraDisplay.startRecording();
+            mMagicCameraDisplay.startRecording(MagicCameraDisplay.getOutputRecordPath().getAbsolutePath());
         }
         if (mMagicCameraDisplay != null) {
             mMagicCameraDisplay.onResume(this);
