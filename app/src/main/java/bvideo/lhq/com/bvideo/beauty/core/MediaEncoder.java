@@ -41,7 +41,9 @@ public abstract class MediaEncoder implements Runnable {
 
     public interface MediaEncoderListener {
         void onPrepared(MediaEncoder encoder);
+
         void onStopped(MediaEncoder encoder);
+
         void onMuxerStopped();
     }
 
@@ -86,7 +88,7 @@ public abstract class MediaEncoder implements Runnable {
     protected final MediaEncoderListener mListener;
 
     boolean mInputError = false;
-    
+
     private MediaType mMediaType = MediaType.MEDIA_PUSH;
 
     public MediaEncoder(final MediaMuxerWrapper muxer, final MediaEncoderListener listener, MediaType type) {
@@ -107,9 +109,10 @@ public abstract class MediaEncoder implements Runnable {
             }
         }
     }
-    
+
     /**
      * the method to indicate frame data is soon available or already available
+     *
      * @return return true if encoder is ready to encod.
      */
     public boolean frameAvailableSoon() {
@@ -187,7 +190,8 @@ public abstract class MediaEncoder implements Runnable {
     * this method should be implemented in sub class, so set this as abstract method
     * @throws IOException
     */
-   /*package*/ abstract void prepare() throws IOException;
+   /*package*/
+    abstract void prepare() throws IOException;
 
     /*package*/ void startRecording() {
         if (DEBUG) Log.v(TAG, "startRecording");
@@ -216,6 +220,7 @@ public abstract class MediaEncoder implements Runnable {
 
 //********************************************************************************
 //********************************************************************************
+
     /**
      * Release all releated objects
      */
@@ -262,8 +267,9 @@ public abstract class MediaEncoder implements Runnable {
 
     /**
      * Method to set byte array to the MediaCodec encoder
+     *
      * @param buffer
-     * @param length　length of byte array, zero means EOS.
+     * @param length             　length of byte array, zero means EOS.
      * @param presentationTimeUs
      */
     protected void encode(final ByteBuffer buffer, final int length, final long presentationTimeUs) {
@@ -318,7 +324,8 @@ public abstract class MediaEncoder implements Runnable {
             Log.w(TAG, "muxer is unexpectedly null");
             return;
         }
-        LOOP:    while (mIsCapturing) {
+        LOOP:
+        while (mIsCapturing) {
             // get encoded data with maximum timeout duration of TIMEOUT_USEC(=10[msec])
             try {
                 encoderStatus = mMediaCodec.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
@@ -362,7 +369,8 @@ public abstract class MediaEncoder implements Runnable {
                 }
             } else if (encoderStatus < 0) {
                 // unexpected status
-                if (DEBUG) Log.w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
+                if (DEBUG)
+                    Log.w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
             } else {
                 final ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
                 if (encodedData == null) {
@@ -387,17 +395,17 @@ public abstract class MediaEncoder implements Runnable {
                     }
                     // write encoded data to muxer(need to adjust presentationTimeUs.
                     mBufferInfo.presentationTimeUs = getPTSUs();
-                    if(mMediaType == MediaType.MEDIA_PUSH) {
-                    	if (DEBUG) Log.d(TAG, "drain:writeSampleData2");
-	                    encodedData.position(mBufferInfo.offset);
-	                    byte[] outData = new byte[mBufferInfo.size];
-	                    encodedData.get(outData);
-	                    muxer.writeSampleData2(outData);
-                    } else if(mMediaType == MediaType.MEDIA_RECORD){
-                    	if (DEBUG) Log.d(TAG, "drain:writeSampleData");
-                    	muxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
+                    if (mMediaType == MediaType.MEDIA_PUSH) {
+                        if (DEBUG) Log.d(TAG, "drain:writeSampleData2");
+                        encodedData.position(mBufferInfo.offset);
+                        byte[] outData = new byte[mBufferInfo.size];
+                        encodedData.get(outData);
+                        muxer.writeSampleData2(outData);
+                    } else if (mMediaType == MediaType.MEDIA_RECORD) {
+                        if (DEBUG) Log.d(TAG, "drain:writeSampleData");
+                        muxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
                     }
-                    
+
                     prevOutputPTSUs = mBufferInfo.presentationTimeUs;
                 }
                 // return buffer to encoder
@@ -415,8 +423,10 @@ public abstract class MediaEncoder implements Runnable {
      * previous presentationTimeUs for writing
      */
     private long prevOutputPTSUs = 0;
+
     /**
      * get next encoding presentationTimeUs
+     *
      * @return
      */
     protected long getPTSUs() {

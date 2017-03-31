@@ -23,7 +23,7 @@ public class MagicBeautyFilter extends GPUImageFilter {
         super.onInit();
         mSingleStepOffsetLocation = GLES20.glGetUniformLocation(getProgram(), "singleStepOffset");
         mParamsLocation = GLES20.glGetUniformLocation(getProgram(), "params");
-        setBeautyLevel(3);
+        setBeautyLevel(5);
     }
     
     public void onDestroy() {

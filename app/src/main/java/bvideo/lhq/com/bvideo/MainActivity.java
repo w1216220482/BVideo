@@ -39,7 +39,6 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
     public final static String RECORD_MOVIE_PATH = "movie_path";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +61,7 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
     private void initSurface() {
         if (CameraInterface.getInstance().openCamera(MediaType.MEDIA_RECORD)) {
         } else {
-            CustomToast.showToast(getApplicationContext(),"您的相机不可用,请检查相机是否被禁用",2000);
+            CustomToast.showToast(getApplicationContext(), "您的相机不可用,请检查相机是否被禁用", 2000);
         }
 
         glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
@@ -94,19 +93,21 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
                 MagicFilterType.BEAUTY, this);
         mMagicCameraDisplay.setFilter(mFilter);
     }
+
     private void startRecording() {
-        if(!mIsRecording) {
+        if (!mIsRecording) {
             mIsRecording = true;
             mMagicCameraDisplay.startRecording();
         }
     }
 
     private void stopRecording() {
-        if(mIsRecording) {
+        if (mIsRecording) {
             mIsRecording = false;
             mMagicCameraDisplay.stopRecording();
         }
     }
+
     @Override
     public void onStartRecord() {
         startRecording();
@@ -115,8 +116,8 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
     @Override
     public void onEndRecord(int seconds) {
         stopRecording();
-        if(seconds < 8) {
-            CustomToast.showToast(getApplicationContext(),"录制时间必须大于8s",2000);
+        if (seconds < 3) {
+            CustomToast.showToast(getApplicationContext(), "录制时间必须大于3s", 2000);
             if (mMagicCameraDisplay != null) {
                 String path = mMagicCameraDisplay.getMediaOutPath();
                 AppCacheManager.deleteFileFromPath(path);
@@ -129,6 +130,7 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
             startActivity(intent);
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -136,7 +138,7 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
             mMagicCameraDisplay.startRecording();
         }
         if (mMagicCameraDisplay != null) {
-            mMagicCameraDisplay.onResume();
+            mMagicCameraDisplay.onResume(this);
         }
     }
 
