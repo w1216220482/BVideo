@@ -6,5 +6,5 @@
 和GPUImage类似的美颜视频录制<br/>
 
 
-MediaCodec + MediaMuxer编码<br/>
-OpenGL渲染
+AudioRecord + MediaCodec + MediaMuxer生成MP4<br/>
+OpenGL ES美颜渲染

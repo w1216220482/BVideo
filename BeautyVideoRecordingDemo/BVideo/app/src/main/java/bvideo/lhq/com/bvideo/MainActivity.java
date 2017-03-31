@@ -79,21 +79,18 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
         CameraInterface.getInstance().setPreviewRate(previewRate);
     }
 
+    /**
+     * 设置美颜滤镜
+     */
     protected void openBeauty() {
-//        if (beauty) {
-//            beauty = false;
-//            mMagicCameraDisplay.setFilter(MagicFilterType.NONE);
-//        } else {
-//            beauty = true;
-//            GPUImageFilter mFilter = MagicFilterFactory.getFilters(
-//                    MagicFilterType.BEAUTY, this);
-//            mMagicCameraDisplay.setFilter(mFilter);
-//        }
         GPUImageFilter mFilter = MagicFilterFactory.getFilters(
                 MagicFilterType.BEAUTY, this);
         mMagicCameraDisplay.setFilter(mFilter);
     }
 
+    /**
+     * 开始录制
+     */
     private void startRecording() {
         if (!mIsRecording) {
             mIsRecording = true;
@@ -101,6 +98,9 @@ public class MainActivity extends Activity implements TimerRecordView.OnRecordEn
         }
     }
 
+    /**
+     * 停止录制
+     */
     private void stopRecording() {
         if (mIsRecording) {
             mIsRecording = false;
